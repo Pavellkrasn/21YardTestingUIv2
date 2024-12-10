@@ -11,6 +11,10 @@ class Base:
     def click(self, locator: str) -> None:  # клик, при необходимости сам делает скролл к нужному элементу
         self.page.click(locator)
 
+    def click_enter(self, locator: str) -> None:  # клик и энтер
+        self.page.click(locator)
+        self.page.keyboard.press("Enter")
+
     def input(self, locator: str, data: str) -> None:  # ввод в поле
         self.page.locator(locator).type(text=data,delay=25)
 

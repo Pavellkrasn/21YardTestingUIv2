@@ -11,37 +11,24 @@ class ApplicationPage(Base):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
         self.assertion = Assertions(page)
+        self.create_button = page.get_by_role(role = "button", name="Опубликовать")
 
-    def press_arrow_down_and_enter(self) -> None:
-        """
-        Функция для имитации нажатий стрелки вниз и клавиши Enter.
-        """
-        # Нажимаем стрелку вниз num_down р
-        self.page.keyboard.press("ArrowDown")
-        time.sleep(1)
-        self.page.keyboard.press("Enter")
-
-    def some_def(self):
+    def fill_application(self):
         self.open("/applications/create")
-        self.click(Application.INPUT_REGION)
-        self.press_arrow_down_and_enter()
-        time.sleep(1)
-        self.click(Application.INPUT_CITY)
-        self.press_arrow_downсв юю_and_enter()
         self.click(Application.INPUT_CATEGORY)
         self.page.get_by_text("Геология").click()
-        self.input(Application.INPUT_SCOPE_OF_WORK, "Нормальный обьем работ")
-        self.input("input[name='paymentDescription']", "Дескрипшен")
-        self.page.get_by_role("button", name="Опубликовать").click()
-        self.wait_for_element("#headlessui-dialog-panel-\:r6tl\: > div")
-
-
-    def press_arrow_down_and_enter(self) -> None:
-        """
-        Функция для имитации нажатий стрелки вниз и клавиши Enter.
-        """
         self.page.keyboard.press("Enter")
+        self.input(Application.INPUT_SCOPE_OF_WORK, "Тест Описание работ")
+        self.click_enter(Application.INPUT_REGION)
+        self.click_enter(Application.INPUT_CITY)
+        self.wait_for_element(Application.INPUT_PRICE_DETAILS)
+        self.input(Application.INPUT_PRICE_DETAILS, "Тест Описание цены")
+        time.sleep(2)
 
+    def end_create(self):
+        self.create_button.click()
+        self.wait_for_element(Application.APRUVE_NUMBER_PANEL)
+        self.click(Application.APRUVE_NUMBER_PANEL_CANSEL_BUTTON)
 
 
        # self.click(Application.INPUT_CATEGORY)

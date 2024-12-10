@@ -6,5 +6,6 @@ from pages.application_page import ApplicationPage
 class TestCreateApplications:
     def test_create_applications(self, browser):
         ap = ApplicationPage(browser)
-        ap.some_def()
+        ap.fill_application()
+        ap.end_create()
 
