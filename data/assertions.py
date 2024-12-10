@@ -12,9 +12,9 @@ class Assertions(Base):
         expect(self.page).to_have_url(f"{host.get_base_url()}{uri}", timeout=10000), msg
 
 
-    def have_text(self, locator, text: str, msg): #элемент имеет текст
+    def have_text(self, locator, text: str): #элемент имеет текст
         loc = self.page.locator(locator)
-        expect(loc).to_have_text(text), msg
+        expect(loc).to_have_text(text)
 
 
     def check_presence(self, locator, msg):

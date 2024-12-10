@@ -71,6 +71,7 @@ class Base:
 
     def checkbox(self, locator: str) -> None:  # проверяем является ли элемент чек-боксом и проставляем чекбокс
         self.page.locator(locator).check()
+        self.page.click(locator)
 
     def is_element_present(self, locator: str) -> bool:  # если элемент есть то все ок
         try:

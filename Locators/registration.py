@@ -8,6 +8,10 @@ class Registration:
 
     KONF_CHECKBOX = "span[class='mt-28 f-b3'] img[class='opacity-0 w-[11px] h-8']"
     OFERTA_CHECKBOX = "//*[@id='page-content']/div/div/span[3]/button"
-    SERVICE_CHECKBOX = "//*[@id='page-content']/div/div/span[4]/button`"
+    SERVICE_CHECKBOX = "//*[@id='page-content']/div/div/span[4]/button"
+
+
+    CONFFIRM_TEXT_TITLE = "*[class='Подтверждение E-mail']"
+    CONFIRM_TEXT_SUBTITLE="p[class='f-b3 text-center mt-8']"
 
     REGISTRATION_BUTTON = "#page-content > div > div > button"
