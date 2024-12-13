@@ -1,6 +1,6 @@
 import os
 
-class Environment:
+class Host:
     DEV = 'dev'
     PROD = 'prod'
 
@@ -21,4 +21,5 @@ class Environment:
         else:
             raise Exception(f"Unknown value of ENV variable {self.env}")
 
-host = Environment()
+
+host = Host()

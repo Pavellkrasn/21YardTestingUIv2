@@ -1,4 +1,4 @@
-from playwright.sync_api import Page, TimeoutError, Response, expect
+from playwright.sync_api import Page, TimeoutError, Response, expect, Locator
 from data.environment import host
 
 class Base:
@@ -8,31 +8,50 @@ class Base:
     def open(self, uri) -> Response | None:
         return self.page.goto(f"{host.get_base_url()}{uri}", wait_until='domcontentloaded')
 
+    def route_abort(self, url: str):
+        return self.page.route(url, lambda route: route.abort())
+
     def click(self, locator: str) -> None:  # клик, при необходимости сам делает скролл к нужному элементу
         self.page.click(locator)
 
-    def click_enter(self, locator: str) -> None:  # клик и энтер
-        self.page.click(locator)
-        self.page.keyboard.press("Enter")
+    def click_by_locator (self, locator: Locator) -> None:
+        locator.click()
 
-    def input(self, locator: str, data: str) -> None:  # ввод в поле
-        self.page.locator(locator).type(text=data,delay=25)
+    def click_first_element(self, locator: str):  # кликаем по первому элементу, если по индексу выдает out of range
+        self.page.locator(locator).first.click()
+
+    def click_by_text(self, text: str):  # находим элемент(кнопку)с нужным текстом внутри и кликаем
+        self.page.get_by_text(text).click()
 
     def click_at_coordinates(self, coordinates: dict, coordinate_key: str) -> None:
         x, y = coordinates[coordinate_key]
         for _ in range(20):
             self.page.mouse.click(x, y)
 
-    def get_text(self, locator: str,
-                 index: int) -> str:  # достаем текст, если локатор один, то в аргумент прокидываем значение 0
-        return self.page.locator(locator).nth(index).text_content()
-
     def click_element_by_index(self, locator: str, index: int) -> None:  # находим элемент по индексу и кликаем
         self.page.locator(locator).nth(index).click()
+
+    def click_enter(self, locator: str) -> None:  # клик и энтер
+        self.page.click(locator)
+        self.page.keyboard.press("Enter")
+
+    def input(self, locator: str, data: str) -> None:  # ввод в поле
+        self.page.locator(locator).type(text=data,delay=50)
 
     def input_value_by_index(self, locator: str, index: int,
                              data: str) -> None:  # вводим данные в нужные поля по индексу
         self.page.locator(locator).nth(index).fill(data)
+
+    def focus_press_by_locator(self,locator: Locator, what_press: str)->None:
+        locator.focus()
+        locator.press(what_press)
+
+
+
+    def get_text(self, locator: str,
+                 index: int) -> str:  # достаем текст, если локатор один, то в аргумент прокидываем значение 0
+        return self.page.locator(locator).nth(index).text_content()
+
 
     def wait_for_element(self, locator, timeout=12000) -> None:  # ожидание какого то элемента если нужно
         self.page.wait_for_selector(locator, timeout=timeout)
@@ -56,12 +75,6 @@ class Base:
             elements[index].check()
         else:
             print(f"Элемент с индексом {index} не найден.")
-
-    def click_first_element(self, locator: str):  # кликаем по первому элементу, если по индексу выдает out of range
-        self.page.locator(locator).first.click()
-
-    def click_by_text(self, text: str):  # находим элемент(кнопку)с нужным текстом внутри и кликаем
-        self.page.get_by_text(text).click()
 
     def input_in_shadow_root(self, shadow_locator: str, shadow_input_locator: str, data: str):
         # ищем элемент в шадоуруте
@@ -118,21 +131,6 @@ class Base:
         self.page.wait_for_load_state()  # Ожидаем завершения загрузки страницы в текущей вкладке
         return new_tab
 
-    def close_all_tabs_except_first(self):  # закрываем все табы, кроме первогоо
-        all_tabs = self.page.context.pages
-        for p in range(1, len(all_tabs)):
-            all_tabs[p].close()
-
-    def refresh(self) -> Response | None:  # рефреш страницы
-        return self.page.reload(wait_until='domcontentloaded')
-
-    def alert_with_double_input(self, key1, value1, key2, value2):
-        # ключ значения нужно вводить в ковычках,в ключ указывать название поля, а в значение что хотим ввести
-        dialog = self.page.wait_for_event('dialog')
-        inputs = {key1: value1, key2: value2}
-        dialog.fill(inputs)
-        dialog.accept()
-
     def switch_to_iframe_and_click(self, iframe_locator,
                                    locator_for_click):  # переключаемся на iframe по локатору и кликаем
         frame = self.page.frame_locator(iframe_locator)
@@ -154,3 +152,18 @@ class Base:
 
     def switch_to_main_frame(self):  # возврат на основной фрейм
         return self.page.main_frame
+
+    def close_all_tabs_except_first(self):  # закрываем все табы, кроме первогоо
+        all_tabs = self.page.context.pages
+        for p in range(1, len(all_tabs)):
+            all_tabs[p].close()
+
+    def refresh(self) -> Response | None:  # рефреш страницы
+        return self.page.reload(wait_until='domcontentloaded')
+
+    def alert_with_double_input(self, key1, value1, key2, value2):
+        # ключ значения нужно вводить в ковычках,в ключ указывать название поля, а в значение что хотим ввести
+        dialog = self.page.wait_for_event('dialog')
+        inputs = {key1: value1, key2: value2}
+        dialog.fill(inputs)
+        dialog.accept()

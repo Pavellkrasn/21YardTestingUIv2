@@ -8,8 +8,8 @@ class Assertions(Base):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
 
-    def check_URL(self, uri, msg):
-        expect(self.page).to_have_url(f"{host.get_base_url()}{uri}", timeout=10000), msg
+    def check_URL(self, uri):
+        expect(self.page).to_have_url(f"{host.get_base_url()}{uri}", timeout=10000)
 
 
     def have_text(self, locator, text: str): #элемент имеет текст

@@ -16,7 +16,7 @@ class Login(Base):
         self.input(Auth.INPUT_EMAIL, Constants.login)
         self.input(Auth.INPUT_PASSWORD, Constants.password)
         self.click(Auth.BUTTON_LOGIN)
-        self.assertion.check_URL("", "Wrong URL")
+        self.assertion.check_URL("")
         return self
 
 
