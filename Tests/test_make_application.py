@@ -6,10 +6,11 @@ from pages.application_page import OpenApplicationCreatePage, OpenApplicationLis
 @pytest.mark.usefixtures('user_login')
 class TestCreateApplications:
     def test_create_applications(self, browser):
-        (OpenApplicationCreatePage(browser)
-         .fill_application()
-         .create_with_no_phone())
-
+        for i in range(5):
+            (OpenApplicationCreatePage(browser)
+            .fill_application()
+            .create_application()
+            .check_application_result_loop(iterator=i))
 
 @pytest.mark.smoke
 @pytest.mark.usefixtures('user_login')
