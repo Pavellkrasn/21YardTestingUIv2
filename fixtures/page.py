@@ -1,16 +1,26 @@
+import os
+import time
+
+import playwright
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page, sync_playwright
+from playwright._impl._errors import TimeoutError
+
+from data.decorators import retry_on_error
+
 
 def pytest_addoption(parser):
     """Пользовательские опции командной строки"""
     parser.addoption('--bn', action='store', default="chrome", help="Choose browser: chrome, remote_chrome or firefox")
     parser.addoption('--h', action='store', default=False, help='Choose headless: True or False')
     parser.addoption('--s', action='store', default={'width': 1920, 'height': 1080}, help='Size window: width,height')
-    parser.addoption('--slow', action='store', default=200, help='Choose slow_mo for robot action')
+    parser.addoption('--slow', action='store', default=100, help='Choose slow_mo for robot action')
     parser.addoption('--t', action='store', default=60000, help='Choose timeout')
     parser.addoption('--l', action='store', default='ru-RU', help='Choose locale')
     # parser.addini('qs_to_api_token', default=os.getenv("QASE_TOKEN"), help='Qase app token')
 
+if not os.path.exists('screenshots'):
+    os.makedirs('screenshots')
 
 
 @pytest.fixture(scope='class')
@@ -20,6 +30,7 @@ def browser(request) -> Page:
         browser = get_remote_chrome(playwright, request)
         context = get_context(browser, request, 'remote')
         page_data = context.new_page()
+        page_data.set_viewport_size({"width": 1920, "height": 1080}) # отдельно настройка для headless режима
     elif request.config.getoption("bn") == 'firefox':
         browser = get_firefox_browser(playwright, request)
         context = get_context(browser, request, 'local')
@@ -53,10 +64,12 @@ def get_chrome_browser(playwright, request) -> Browser:
         args=['--start-maximized']
     )
 
+
 def get_remote_chrome(playwright, request) -> Browser:
     return playwright.chromium.launch(
         headless=True,
-        slow_mo=request.config.getoption("slow")
+        slow_mo=request.config.getoption("slow"),
+
     )
 
 
@@ -84,7 +97,23 @@ def get_context(browser, request, start) -> BrowserContext:
         return context
 
 
-
 @pytest.fixture(scope="function")
 def return_back(browser):
     browser.go_back()
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_makereport(item, call):
+    if call.excinfo is not None:
+        exc_value = call.excinfo.value
+        # Проверка на тип ошибки и наличие TimeoutError или AssertionError
+        if isinstance(exc_value, (TimeoutError, AssertionError)):
+            # Получаем объект браузера из фикстуры
+            browser = item.funcargs.get('browser')
+
+            if browser:
+                test_name = item.nodeid.split('::')[-1]  # Получаем имя теста
+                timestamp = int(time.time())  # Текущий timestamp
+                screenshot_path = f"screenshots/{test_name}_{timestamp}.png"
+                browser.screenshot(path=screenshot_path)
+

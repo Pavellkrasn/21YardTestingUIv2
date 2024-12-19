@@ -10,6 +10,9 @@ class CreateApplication:
     APRUVE_NUMBER_PANEL = "div[id*='headlessui-dialog-panel']"
     APRUVE_NUMBER_PANEL_CANSEL_BUTTON = "div[id *= 'headlessui-dialog-panel'] > button"
 
+    LIST_OF_MY_APPLICATIONS = "//*[@id='page-content']/div/div/div"
+
+
 class ListApplications:
     LIST_OF_APPLICATIONS = "a[href*='/applications/details']"
     AMOUNT_MAJOR = "span[class='amount__major']"
@@ -17,6 +20,11 @@ class ListApplications:
     PAYMENT_PDF = re.compile(r".*/api/marketplace/applications/generate_pdf_invoice/\d+.*")
     PAYMENT_IS_DONE = "//h2[text()='Счет сформирован!']"
     APPLICATION_DETAILS_URL = re.compile(r"https://dev\.21yard\.com/applications/details.*")
+    SEARCH_BUTTON = "button[class*='12 b']"
+
+
+
+
 
 
 

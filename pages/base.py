@@ -5,6 +5,7 @@ class Base:
     def __init__(self, page: Page):
         self.page = page
 
+
     def open(self, uri) -> Response | None:
         return self.page.goto(f"{host.get_base_url()}{uri}", wait_until='domcontentloaded')
 
@@ -36,7 +37,7 @@ class Base:
         self.page.keyboard.press("Enter")
 
     def input(self, locator: str, data: str) -> None:  # ввод в поле
-        self.page.locator(locator).type(text=data,delay=50)
+        self.page.locator(locator).type(text=data,delay=10)
 
     def input_value_by_index(self, locator: str, index: int,
                              data: str) -> None:  # вводим данные в нужные поля по индексу
@@ -45,6 +46,8 @@ class Base:
     def focus_press_by_locator(self,locator: Locator, what_press: str)->None:
         locator.focus()
         locator.press(what_press)
+
+
 
 
 
@@ -88,7 +91,7 @@ class Base:
 
     def is_element_present(self, locator: str) -> bool:  # если элемент есть то все ок
         try:
-            self.page.wait_for_selector(locator, timeout=10000)
+            self.page.wait_for_selector(locator, timeout=20000)
         except TimeoutError as e:
             return False
         return True

@@ -24,7 +24,7 @@ class TestE2E:
         self._login_user(browser, create_test_data)
 
         # 3. Создание компании
-        self._create_company(browser)
+        self._create_company(browser, create_test_data)
 
         # 4. Создание 5ти заявок
         self._create_application(browser)
@@ -39,7 +39,7 @@ class TestE2E:
         self._check_application_sales_application_bank_card(browser)
 
         # 8. удаляем аккаунт
-        self.delete_user(browser)
+        self.delete_user(browser,create_test_data)
 
     @retry_on_error
     def _register_user(self, browser, create_test_data):
@@ -51,14 +51,15 @@ class TestE2E:
     @retry_on_error
     def _login_user(self, browser, create_test_data):
         please = OpenLoginPage(browser, create_test_data)
-        please.user_login(create_test_data)  # Используйте проверки для успешной авторизации
-        please.page.screenshot()
 
-    @retry_on_error
-    def _create_company(self, browser):
-        please = OpenPersonalAccountPage(browser)
+        please.user_login(create_test_data)  # Используйте проверки для успешной авторизации
+
+
+    def _create_company(self, browser,create_test_data):
+        please = OpenPersonalAccountPage(browser,create_test_data)
         please.fill_company_fields()
         please.create_company()
+        please.check_name_and_inn()
 
     @retry_on_error
     def _create_application(self, browser):
@@ -89,9 +90,9 @@ class TestE2E:
         please.for_bank_card()
 
     @retry_on_error
-    def delete_user(self, browser):
-        page = OpenPersonalAccountPage(browser)
-        page.delete_account()
+    def delete_user(self, browser,create_test_data):
+        page = OpenPersonalAccountPage(browser,create_test_data)
+        page.delete_account(create_test_data)
 
 
 

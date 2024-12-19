@@ -16,6 +16,7 @@ class PersonalAccount:
     SETTINGS_BUTTON = "(//span[text()='Настройки'])[1]"
 
     MY_COMPANIES_BUTTON = "(//span[text()='Мои компании'])[1]"
+    MY_COMPANY = "div[class='flex flex-col gap-4 flex-1']"
     MY_COMPANY_NAME_TITLE = "(//h3)[1]"
     MY_COMPANY_INN_TITLE = "//div/span[contains(text(), 'ИНН:')]"
 

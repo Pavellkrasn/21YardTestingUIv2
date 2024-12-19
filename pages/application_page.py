@@ -1,20 +1,18 @@
+from data.decorators import retry_on_error
 from pages.base import Base
-from Locators.application import CreateApplication, ListApplications
+from Locators.application import *
 from data.assertions import Assertions
 from playwright.sync_api import Page, expect
+from configuration.postgress_utils import delete_applications
 
-
-class Applications(Base):
-    def __init__(self, page: Page) -> None:
-        super().__init__(page)
-        self.assertion = Assertions(page)
-
-class OpenApplicationCreatePage(Applications):
+class OpenApplicationCreatePage(Base):
     def __init__(self, page: Page) -> None:
         super().__init__(page)
         self.open("/applications/create")
         self.iS = CreateApplication()
-        self.create_button = page.get_by_role(role = "button", name="Опубликовать")
+        self.assertion = Assertions(page)
+        self.create_button = page.get_by_role(role="button", name="Опубликовать")
+        self.max_count_of_applications: int = 5
 
     def fill_application(self):
         self.click(self.iS.INPUT_CATEGORY)
@@ -33,11 +31,29 @@ class OpenApplicationCreatePage(Applications):
         self.click(self.iS.APRUVE_NUMBER_PANEL_CANSEL_BUTTON)
         return self
 
-class OpenApplicationListPage(Applications):
-    def __init__(self,page: Page) -> None:
+    def create_application(self):
+        self.create_button.click()
+        self.assertion.check_URL("myApplications/active")
+        return self
+
+
+
+    def check_application_result_loop(self, iterator: int):
+        iterator += 1
+        self.assertion.check_URL("myApplications/active")
+
+        assert self.page.locator(self.iS.LIST_OF_MY_APPLICATIONS).count() == iterator
+        assert self.page.locator("span[class='f-b2']").text_content() == f"{self.max_count_of_applications - iterator}/5"
+        return self
+
+
+
+class OpenApplicationListPage(Base):
+    def __init__(self, page: Page) -> None:
         super().__init__(page)
         self.open("/applications")
         self.iS = ListApplications()
+        self.assertion = Assertions(page)
         self.contact_button = page.get_by_role("button", name="Получить контакты").first
         self.pay_now_button = page.get_by_text("Оплата сразу")
         self.pay_process_button = page.get_by_text("Оплата в процессе сделки")
@@ -46,7 +62,9 @@ class OpenApplicationListPage(Applications):
         self.pay_button = page.get_by_role("button", name="К оплате")
         self.continue_button = page.get_by_role("button", name="Продолжить")
 
+
     def click_first_application_commission(self):
+        self.refresh()
         self.wait_for_all_elements(self.iS.LIST_OF_APPLICATIONS)
         self.page.get_by_text("за комиссию").first.click()
         self.page.wait_for_url(self.iS.APPLICATION_DETAILS_URL)
@@ -54,7 +72,9 @@ class OpenApplicationListPage(Applications):
         return self
 
     def click_first_application_sales_application(self):
+        self.click(self.iS.SEARCH_BUTTON)
         self.wait_for_all_elements(self.iS.LIST_OF_APPLICATIONS)
+        self.click(self.iS.SEARCH_BUTTON)
         self.page.get_by_text("заявка на продажу").first.click()
         self.page.wait_for_url(self.iS.APPLICATION_DETAILS_URL)
         self.click_by_locator(self.contact_button)
@@ -82,13 +102,6 @@ class OpenApplicationListPage(Applications):
         self.route_abort(self.iS.PAYMENT_PDF)
         self.assertion.have_text(self.iS.PAYMENT_IS_DONE, "Счет сформирован!")
         return self
-
-
-
-
-
-
-
 
 
 

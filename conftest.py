@@ -6,5 +6,6 @@ load_dotenv()# Это нужно, чтобы переменные окружен
 
 pytest_plugins = [
     'fixtures.page',
-    'fixtures.user_auth'
+    'fixtures.user_auth',
+    'fixtures.user_company_data'
 ]

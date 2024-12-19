@@ -1,4 +1,9 @@
 import pytest
+
+from configuration.postgress_utils import delete_applications
+from data.constants import Constants
+from fixtures.page import browser
+from fixtures.user_auth import user_login
 from pages.application_page import OpenApplicationCreatePage, OpenApplicationListPage
 
 
@@ -7,6 +12,7 @@ from pages.application_page import OpenApplicationCreatePage, OpenApplicationLis
 class TestCreateApplications:
     def test_create_applications(self, browser):
         for i in range(5):
+            delete_applications(Constants.login)
             (OpenApplicationCreatePage(browser)
             .fill_application()
             .create_application()
