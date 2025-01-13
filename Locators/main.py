@@ -4,7 +4,6 @@ class Main:
     BUTTON_LOGIN_HEADLESS = "a[href='/login/'][type='button'][class*='md:!hidden']"
     BUTTON_HEADLESS_MENU = "button[aria-haspopup='menu']"
 
-
     MENU_ITEM_APPLICATIONS = "a[role='menuitem'][href='/applications']"
     MENU_ITEM_MY_APPLICATIONS = "a[role='menuitem'][href='/myApplications/active']"
     MENU_ITEM_TARIFFS = "a[role='menuitem'][href='/tariffs/responseApplication']"
@@ -12,7 +11,6 @@ class Main:
     MENU_ITEM_HELP = "a[role='menuitem'][href='https://t.me/manager21yard']"
 
     WRAPPER_HEADLESS_MENU ="#headlessui-portal-root"
-
 
     TITLE_MAIN = "//h1[contains(@class,'sm:text-center')]"
     TITLE_PARTNER_SECTOR = "//h2[contains(@class,'md:mb-4')]"

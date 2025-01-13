@@ -7,7 +7,9 @@ class Base:
 
 
     def open(self, uri) -> Response | None:
-        return self.page.goto(f"{host.get_base_url()}{uri}", wait_until='domcontentloaded')
+        if self.current_url() != f"{host.get_base_url()}{uri}":
+            return self.page.goto(f"{host.get_base_url()}{uri}", wait_until='domcontentloaded')
+        return
 
     def route_abort(self, url: str):
         return self.page.route(url, lambda route: route.abort())
@@ -47,10 +49,6 @@ class Base:
         locator.focus()
         locator.press(what_press)
 
-
-
-
-
     def get_text(self, locator: str,
                  index: int) -> str:  # достаем текст, если локатор один, то в аргумент прокидываем значение 0
         return self.page.locator(locator).nth(index).text_content()
@@ -66,6 +64,7 @@ class Base:
             self.page.wait_for_selector(locator, timeout=timeout)
 
         return elements
+
 
     def current_url(self) -> str:  # возвращает урл
         return self.page.url

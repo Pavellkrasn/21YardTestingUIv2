@@ -1,9 +1,8 @@
-from data.decorators import retry_on_error
 from pages.base import Base
 from Locators.application import *
 from data.assertions import Assertions
-from playwright.sync_api import Page, expect
-from configuration.postgress_utils import delete_applications
+from playwright.sync_api import Page
+
 
 class OpenApplicationCreatePage(Base):
     def __init__(self, page: Page) -> None:
@@ -15,6 +14,7 @@ class OpenApplicationCreatePage(Base):
         self.max_count_of_applications: int = 5
 
     def fill_application(self):
+        self.page.wait_for_timeout(500)
         self.click(self.iS.INPUT_CATEGORY)
         self.page.get_by_text("Геология").click()
         self.page.keyboard.press("Enter")
@@ -28,7 +28,9 @@ class OpenApplicationCreatePage(Base):
     def create_with_no_phone(self):
         self.create_button.click()
         self.wait_for_element(self.iS.APRUVE_NUMBER_PANEL)
+        self.page.pause()
         self.click(self.iS.APRUVE_NUMBER_PANEL_CANSEL_BUTTON)
+        self.route_abort(self.iS.CONFIRM_PHONE_URL)
         return self
 
     def create_application(self):
@@ -36,12 +38,9 @@ class OpenApplicationCreatePage(Base):
         self.assertion.check_URL("myApplications/active")
         return self
 
-
-
     def check_application_result_loop(self, iterator: int):
         iterator += 1
         self.assertion.check_URL("myApplications/active")
-
         assert self.page.locator(self.iS.LIST_OF_MY_APPLICATIONS).count() == iterator
         assert self.page.locator("span[class='f-b2']").text_content() == f"{self.max_count_of_applications - iterator}/5"
         return self
@@ -64,7 +63,6 @@ class OpenApplicationListPage(Base):
 
 
     def click_first_application_commission(self):
-        self.refresh()
         self.wait_for_all_elements(self.iS.LIST_OF_APPLICATIONS)
         self.page.get_by_text("за комиссию").first.click()
         self.page.wait_for_url(self.iS.APPLICATION_DETAILS_URL)

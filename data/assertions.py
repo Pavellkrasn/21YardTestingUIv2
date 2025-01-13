@@ -15,9 +15,9 @@ class Assertions(Base):
         loc = self.page.locator(locator)
         expect(loc).to_have_text(text)
 
-    def check_presence(self, locator, msg):
+    def check_presence(self, locator):
         loc = self.page.locator(locator)
-        expect(loc).to_be_visible(visible=True, timeout=12000), msg
+        expect(loc).to_be_visible(visible=True, timeout=12000),
 
     def check_absence(self, locator, msg):
         loc = self.page.locator(locator)

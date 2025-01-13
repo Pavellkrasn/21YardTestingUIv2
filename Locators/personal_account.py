@@ -1,9 +1,7 @@
-
 class PersonalAccount:
     TITLE_PERSONAL_ACCOUNT = "h1[class='xl:hidden text-start ']"
     ADD_COMPANY_BUTTON = "//*[@id='page-content']/div/div/div[2]/button"
     MAKE_COMPANY_WRAPPER = ""
-
 
     WRAPPER_LOCATOR = "div[class*='isOpen']"
     WRAPPER_INPUT_COMPANY_NAME = "input[placeholder='ООО/ОАО/ИП']"
@@ -24,7 +22,6 @@ class PersonalAccount:
     SAVE_DATA_BUTTON = "//div[text()='Сохранить данные']"
     INPUT_MIDDLE_NAME = "input[name='middleName']"
     INPUT_LAST_NAME = "input[name='lastName']"
-
 
 
 class CompanyWrapper:

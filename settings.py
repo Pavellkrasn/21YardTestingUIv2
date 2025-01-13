@@ -10,4 +10,10 @@ class Config(BaseSettings):
     POSTGRES_PORT: int
     POSTGRES_DB: str
 
+    REDIS_PASSWORD: str
+    REDIS_HOST: str
+    REDIS_PORT: str
+    MAX_POOL_CONNECTIONS: str
+
+
 settings = Config()

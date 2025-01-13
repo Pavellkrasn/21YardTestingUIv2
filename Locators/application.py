@@ -1,4 +1,3 @@
-
 import re
 
 class CreateApplication:
@@ -9,8 +8,8 @@ class CreateApplication:
     INPUT_PRICE_DETAILS = "input[placeholder='Например: не более 1000р за кв.м.']"
     APRUVE_NUMBER_PANEL = "div[id*='headlessui-dialog-panel']"
     APRUVE_NUMBER_PANEL_CANSEL_BUTTON = "div[id *= 'headlessui-dialog-panel'] > button"
-
     LIST_OF_MY_APPLICATIONS = "//*[@id='page-content']/div/div/div"
+    CONFIRM_PHONE_URL = re.compile(r"send_telegram_verification_code")
 
 
 class ListApplications:
@@ -21,6 +20,8 @@ class ListApplications:
     PAYMENT_IS_DONE = "//h2[text()='Счет сформирован!']"
     APPLICATION_DETAILS_URL = re.compile(r"https://dev\.21yard\.com/applications/details.*")
     SEARCH_BUTTON = "button[class*='12 b']"
+    SEARCH_INPUT = "input[placeholder='Поиск заказов']"
+    IMAGE_EMPTY_ERROR = "img[src*='listingEmpty']"
 
 
 

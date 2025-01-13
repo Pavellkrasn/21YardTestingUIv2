@@ -1,5 +1,4 @@
 import pytest
-
 from data.bulder import CompanyDataBuilder, UserDataBuilder
 
 

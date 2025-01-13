@@ -1,10 +1,13 @@
 import pytest
 
-from pages.reset_password_page import OpenResetPasswordPage
+from pages.registration_page import OpenRegistrationPage
 
 
 @pytest.mark.smoke
 class TestLogin:
     def test_user_login(self, browser):
-         (OpenResetPasswordPage(browser, create_test_data=None)
-          .reset_password())
+        (OpenRegistrationPage(browser, create_test_data=None)
+        .fill_registration_fields()
+        .click_on_checkboxes()
+        .click_on_registration_button()
+        .reset_password())

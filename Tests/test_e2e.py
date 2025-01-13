@@ -1,13 +1,12 @@
-from playwright.async_api import Playwright
 
-from data.decorators import retry_on_error
+
+from data.decorators import retry_on_error, empty_list_error
 from fixtures.page import browser
 from fixtures.user_company_data import create_test_data
 from pages.application_page import OpenApplicationCreatePage, OpenApplicationListPage
 from pages.login_page import OpenLoginPage
 from pages.personal_account_page import OpenPersonalAccountPage
 from pages.registration_page import OpenRegistrationPage
-from playwright._impl._errors import TimeoutError
 
 import pytest
 
@@ -41,19 +40,19 @@ class TestE2E:
         # 8. удаляем аккаунт
         self.delete_user(browser,create_test_data)
 
-    @retry_on_error
     def _register_user(self, browser, create_test_data):
         please = OpenRegistrationPage(browser, create_test_data)
-        please.fill_registration_fields(create_test_data)
+        please.fill_registration_fields()
         please.click_on_checkboxes()
         please.click_on_registration_button()
+        please.confirm_email()
+        please.confirm_phone()
+        please.reset_password()
 
     @retry_on_error
     def _login_user(self, browser, create_test_data):
         please = OpenLoginPage(browser, create_test_data)
-
-        please.user_login(create_test_data)  # Используйте проверки для успешной авторизации
-
+        please.user_login()
 
     def _create_company(self, browser,create_test_data):
         please = OpenPersonalAccountPage(browser,create_test_data)
@@ -67,22 +66,21 @@ class TestE2E:
         please.fill_application()
         please.create_application()
 
-
-    @retry_on_error
+    @empty_list_error
     def _check_application_with_commission_payment_pdf(self, browser):
         please = OpenApplicationListPage(browser)
         please.click_first_application_commission()
         please.give_me_contact_now()
         please.for_payment_pdf()
 
-    @retry_on_error
+    @empty_list_error
     def _check_application_with_commission_bank_card(self, browser):
         please = OpenApplicationListPage(browser)
         please.click_first_application_commission()
         please.give_me_contact_now()
         please.for_bank_card()
 
-    @retry_on_error
+    @empty_list_error
     def _check_application_sales_application_bank_card(self, browser):
         please = OpenApplicationListPage(browser)
         please.click_first_application_sales_application()
@@ -92,7 +90,7 @@ class TestE2E:
     @retry_on_error
     def delete_user(self, browser,create_test_data):
         page = OpenPersonalAccountPage(browser,create_test_data)
-        page.delete_account(create_test_data)
+        page.delete_account()
 
 
 
@@ -100,8 +98,6 @@ class TestE2E:
 '''
 toDo: 
 - добавить чекер 
-- Проверка номера (дропнуть запрос на цифры в тг)
-- Восстановление пароля (проверка запроса на бэк) 
 '''
 
 

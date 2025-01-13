@@ -16,7 +16,7 @@ WHERE work_scope = %(work_scope)s
 '''
 DELETE_COMPANIES = '''
 DELETE FROM companies 
-WHERE company_id = (
+WHERE id = (
     SELECT company_id 
     FROM company_members_association 
     WHERE user_id = (
@@ -26,5 +26,20 @@ WHERE company_id = (
     )
 );
 '''
+UPDATE_APPLICATIONS_COUNTER = '''
+UPDATE companies SET available_applications_counter = 5
+WHERE id = (
+    SELECT company_id 
+    FROM company_members_association 
+    WHERE user_id = (
+        SELECT id 
+        FROM users 
+        WHERE email = %(email)s
+    )
+); 
+'''
 
-
+GET_USER_BY_EMAIL = '''
+SELECT * from users
+WHERE email = %(email)s
+'''
