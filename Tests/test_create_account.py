@@ -4,7 +4,7 @@ from data.constants import Constants
 from pages.personal_account_page import OpenPersonalAccountPage
 from pages.registration_page import OpenRegistrationPage
 
-@pytest.mark.skip
+@pytest.mark.skip("Аккаунт создается один раз после чистки бд")
 class TestCreateAccount:
     def test_create_account(self, browser):
         (OpenRegistrationPage(browser)

@@ -13,6 +13,7 @@ class OpenApplicationCreatePage(Base):
         self.create_button = page.get_by_role(role="button", name="Опубликовать")
         self.max_count_of_applications: int = 5
 
+
     def fill_application(self):
         self.page.wait_for_timeout(500)
         self.click(self.iS.INPUT_CATEGORY)
@@ -64,22 +65,47 @@ class OpenApplicationListPage(Base):
 
     def click_first_application_commission(self):
         self.wait_for_all_elements(self.iS.LIST_OF_APPLICATIONS)
-        self.page.get_by_text("за комиссию").first.click()
+        self.page.get_by_text("за комиссию").nth(1).click()
         self.page.wait_for_url(self.iS.APPLICATION_DETAILS_URL)
         self.click_by_locator(self.contact_button)
         return self
+
+
+    def click_application_only_for_accreditive(self):
+        self.wait_for_all_elements(self.iS.LIST_OF_APPLICATIONS)
+        self.page.get_by_text("заявка на продажу").nth(0).click()
+        self.page.get_by_text("Получить контакты").first.click()
+        self.page.get_by_text("К аккредитации").click()
+        return self
+
+
+    def wait_price_for_unauthorized(self):
+        self.wait_for_element(locator="//span[text()='2400']")
+        return self
+
+
+
+
+
+
+
+
 
     def click_first_application_sales_application(self):
         self.click(self.iS.SEARCH_BUTTON)
         self.wait_for_all_elements(self.iS.LIST_OF_APPLICATIONS)
         self.click(self.iS.SEARCH_BUTTON)
-        self.page.get_by_text("заявка на продажу").first.click()
+        self.page.get_by_text("заявка на продажу").nth(1).click()
         self.page.wait_for_url(self.iS.APPLICATION_DETAILS_URL)
         self.click_by_locator(self.contact_button)
         return self
 
     def give_me_contact_now(self):
         self.click_by_locator(self.pay_now_button)
+        self.click_by_locator(self.continue_button)
+        return self
+
+    def pay_for_procent(self):
         self.click_by_locator(self.continue_button)
         return self
 

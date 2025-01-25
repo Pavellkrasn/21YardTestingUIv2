@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from configuration.postgress_utils import delete_applications, update_applications_counter, get_user_id_by_email
 from configuration.redis_utils import delete_cache_by_key
@@ -11,8 +13,8 @@ from pages.personal_account_page import OpenPersonalAccountPage
 from pages.registration_page import OpenRegistrationPage
 
 
+
 @pytest.mark.regression
-@pytest.mark.usefixtures('create_test_data')
 class TestCreateApplications:
     @pytest.mark.usefixtures('user_login')
     def test_create_applications(self, browser):
@@ -26,7 +28,9 @@ class TestCreateApplications:
             .create_application()
             .check_application_result_loop(iterator=i))
 
-
+@pytest.mark.usefixtures('create_test_data')
+class TestConfirmPhoneFrame:
+    @pytest.mark.smoke
     def test_check_confirm_phone_frame(self,browser,create_test_data):
         (OpenRegistrationPage(browser,create_test_data)
          .fill_registration_fields()
@@ -64,9 +68,16 @@ class TestResponseApplications:
          .click_first_application_sales_application()
          .give_me_contact_now_sales_application()
          .for_bank_card())
+
+    def test_load_screen_for_procent(self,browser):
+        (OpenApplicationListPage(browser)
+         .click_first_application_sales_application()
+         .pay_for_procent())
+
     def test_accredited_companies(self,browser):
-        (OpenApplicationListPage(browser))
-        pass
+        (OpenApplicationListPage(browser)
+         .click_application_only_for_accreditive())
+
 
 
 @pytest.mark.smoke
@@ -74,8 +85,9 @@ class TestApplicationsWithoutAccount:
     def test_load_applications_without_account(self,browser):
         (OpenApplicationListPage(browser)
          .click_first_application_commission()
-         .give_me_contact_now())
-        pass
+         .wait_price_for_unauthorized())
+
+
 
 
 
